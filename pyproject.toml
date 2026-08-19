@@ -1,0 +1,23 @@
+[project]
+name = "agent-evals"
+version = "0.1.0"
+description = "this is deploy a sample agent to AWS agent code runtime and setup evaluations"
+authors = [
+    {name = "nishnath",email = "nishnath.nandi@gmail.com"}
+]
+requires-python = ">=3.14"
+dependencies = [
+    "boto3 (>=1.43.72,<2.0.0)",
+    "bedrock-agentcore (>=1.21.0,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.1.1,<10.0.0)",
+    "ruff (>=0.16.3,<0.17.0)"
+]
