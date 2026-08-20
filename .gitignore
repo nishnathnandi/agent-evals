@@ -3,3 +3,9 @@ __pycache__/
 *.pyc
 .env
 .aws/
+*.pem
+
+# AgentCore CLI output - account-specific (account ID, ARNs, resource IDs),
+# regenerated locally by `agentcore configure` / `agentcore deploy`
+.bedrock_agentcore.yaml
+.bedrock_agentcore/

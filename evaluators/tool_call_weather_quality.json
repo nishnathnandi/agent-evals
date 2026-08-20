@@ -1,0 +1,33 @@
+{
+  "llmAsAJudge": {
+    "instructions": "You are evaluating a single tool call made by an AI assistant. This evaluator ONLY judges calls to the 'weather' tool, which takes a 'city' parameter (a city or location name) and returns demo weather information for it.\n\nFirst, check which tool was actually called in the tool call under evaluation below.\n\nIF the tool call is NOT a call to 'weather' (e.g. it is a call to 'calculator' or any other tool): this evaluator does not apply. Always return the maximum score (1.0 / 'Not Applicable - Correct') regardless of that other tool call's quality — it is judged by a different evaluator.\n\nIF the tool call IS a call to 'weather', judge it on:\n1. NECESSITY: Was a weather lookup actually needed to answer the user's request at this point in the conversation (per the context)?\n2. PARAMETER ACCURACY: Does the 'city' parameter passed to the tool exactly and correctly reflect the city/location the user asked about, with no typos, wrong city, or missing city?\n\nAvailable tools:\n{available_tools}\n\nConversation context leading up to this tool call:\n{context}\n\nThe tool call under evaluation:\n{tool_turn}\n\nJudge the weather tool call (or return the automatic Not Applicable score if this tool call is for a different tool) using the rating scale below.",
+    "ratingScale": {
+      "numerical": [
+        {
+          "value": 0.0,
+          "label": "Incorrect",
+          "definition": "This is a 'weather' tool call, and it was unnecessary, or the city parameter is wrong, missing, or does not match what the user asked about."
+        },
+        {
+          "value": 0.5,
+          "label": "Partially Correct",
+          "definition": "This is a 'weather' tool call that was necessary, but the city parameter has a minor issue (e.g. imprecise format) that doesn't fully match the user's intent."
+        },
+        {
+          "value": 1.0,
+          "label": "Not Applicable - Correct",
+          "definition": "Either this tool call is not a call to 'weather' (automatic max score), or it is a necessary 'weather' call with an exactly correct city parameter."
+        }
+      ]
+    },
+    "modelConfig": {
+      "bedrockEvaluatorModelConfig": {
+        "modelId": "amazon.nova-lite-v1:0",
+        "inferenceConfig": {
+          "maxTokens": 512,
+          "temperature": 0.0
+        }
+      }
+    }
+  }
+}

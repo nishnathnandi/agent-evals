@@ -1,0 +1,43 @@
+{
+  "llmAsAJudge": {
+    "instructions": "You are evaluating the quality of an AI assistant's final response in a single conversational turn. The assistant has access to two tools: 'weather' (returns demo weather for a city) and 'calculator' (evaluates math expressions).\n\nAssess the assistant's final response on these criteria, in order of importance:\n\n1. TOOL GROUNDING: If the user's request needed a tool (weather lookup or a calculation), the response must be based on the actual tool output visible in the context, not values invented by the assistant. Never give credit for a numerically or factually correct-looking answer if no matching tool call appears in the context.\n2. TASK COMPLETION: The response must address every distinct part of the user's request (e.g. if the user asked for weather in two cities and a sum, all three must be present).\n3. ACCURACY: Any values stated (temperatures, calculation results) must exactly match what the corresponding tool returned in the context.\n4. CLARITY: The response should be concise and directly state the answer(s) without unnecessary hedging or repetition.\n\nConversation context (including prior turns, the current user prompt, and any tool calls made this turn):\n{context}\n\nAssistant's final response for this turn:\n{assistant_turn}\n\nJudge holistically using the rating scale below, weighting tool grounding and task completion most heavily.",
+    "ratingScale": {
+      "numerical": [
+        {
+          "value": 0.0,
+          "label": "Very Poor",
+          "definition": "The response ignores tool results, invents information, or fails to address the user's request at all."
+        },
+        {
+          "value": 0.25,
+          "label": "Poor",
+          "definition": "The response addresses only a small part of the request, or contains values that don't match the tool output in context."
+        },
+        {
+          "value": 0.5,
+          "label": "Partial",
+          "definition": "The response addresses some but not all parts of a multi-part request, or has minor inaccuracies relative to tool output."
+        },
+        {
+          "value": 0.75,
+          "label": "Good",
+          "definition": "The response fully addresses the request with values matching the tool output, but is verbose, mildly unclear, or slightly awkward."
+        },
+        {
+          "value": 1.0,
+          "label": "Excellent",
+          "definition": "The response fully and accurately addresses every part of the request, grounded exactly in the tool output visible in the context, stated clearly and concisely."
+        }
+      ]
+    },
+    "modelConfig": {
+      "bedrockEvaluatorModelConfig": {
+        "modelId": "amazon.nova-lite-v1:0",
+        "inferenceConfig": {
+          "maxTokens": 512,
+          "temperature": 0.0
+        }
+      }
+    }
+  }
+}

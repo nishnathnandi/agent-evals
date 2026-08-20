@@ -64,25 +64,33 @@ purpose, least privilege, nothing shared, no secret ever touches source control.
 ## Phase 1 — Deploy a sample agent
 **Goal:** get an AWS-provided sample agent running on AgentCore Runtime in your account.
 
-- [ ] Clone `awslabs/agentcore-samples` (or `aws-samples/sample-amazon-bedrock-agentcore-onboarding`)
-- [ ] Pick the `01-tutorials/07-AgentCore-evaluations` tutorial agent as the starting sample —
-      it's built specifically to pair with evaluations
-- [ ] Copy the sample agent code into `agent/` in your own repo
-- [ ] `poetry add bedrock-agentcore bedrock-agentcore-starter-toolkit`
-- [ ] `agentcore configure --entrypoint agent.py`
-- [ ] `agentcore launch`
-- [ ] Verify deployment: `agentcore invoke` with a test prompt, confirm a response comes back
-- [ ] Note the `agentRuntimeArn` — needed for every later phase
+- [x] Clone https://github.com/aws-samples/sample-bedrock-agentcore-with-strands-and-nova
+- [x] Pick the `05-bedrock-agentcore-runtime-and-observability` tutorial agent as the starting sample
+- [x] Copy the sample agent code into `agent/` in your own repo
+- [x] `poetry add bedrock-agentcore bedrock-agentcore-starter-toolkit`
+- [x] `agentcore configure --entrypoint agent.py`
+- [x] `agentcore launch` (via `agentcore deploy`, the current CLI's replacement for `launch`)
+- [x] Verify deployment: `agentcore invoke` with a test prompt, confirm a response comes back
+- [x] Note the `agentRuntimeArn` — needed for every later phase:
+      `arn:aws:bedrock-agentcore:us-east-1:<AWS_ACCOUNT_ID>:runtime/agent_agent-vJWB1kDOA7`
 
 ## Phase 2 — Enable Observability
 **Goal:** traces, sessions, and spans visible in CloudWatch GenAI Observability.
 
-- [ ] Enable CloudWatch Transaction Search (one-time per account/region):
+- [x] Enable CloudWatch Transaction Search (one-time per account/region):
       CloudWatch console → Application Signals → Transaction Search
-- [ ] Confirm the agent's OTel imports are inside the entrypoint function, not top-level
-      (known AgentCore Runtime init-timeout gotcha)
-- [ ] Invoke the agent a few times to generate traces
-- [ ] Open CloudWatch → GenAI Observability page → confirm Agents / Sessions / Traces views populate
+- [x] Confirm the agent's OTel imports are inside the entrypoint function, not top-level
+      (known AgentCore Runtime init-timeout gotcha) — N/A: `agent/agent.py` has no manual
+      OTel imports; instrumentation is applied via the Dockerfile's
+      `opentelemetry-instrument` CMD wrapper (auto-instrumentation), so this gotcha doesn't apply
+- [x] Invoke the agent a few times to generate traces
+- [x] Open CloudWatch → GenAI Observability page → confirm Agents / Sessions / Traces views populate
+      — confirmed populated. Note: a recurring "Access Denied for this Delivery Destination"
+      warning appears on every `agentcore deploy` for the XRAY trace-delivery link
+      (`agent_agent-vJWB1kDOA7-traces-source` → `agent_agent-vJWB1kDOA7-traces-destination`);
+      this is non-blocking — the runtime execution role has direct `xray:PutTraceSegments`
+      permission, which is the actual trace-ingestion path, and traces/sessions confirmed
+      visible in the dashboard despite the warning
 - [ ] (Optional) Attach a `session.id` via OpenTelemetry baggage to correlate multi-turn traces
 
 ## Phase 3 — Create custom evaluators
